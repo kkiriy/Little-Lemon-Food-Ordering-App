@@ -1,114 +1,65 @@
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useEffect, useMemo, useReducer } from "react";
-import { Alert } from "react-native";
-// import Profile from "./Screens/Profile";
-// import SplashScreen from "./Screens/SplashScreen";
-import Home from "./Screens/Home";
-import Onboarding from "./Screens/Onboarding";
-import Profiles from "./Screens/Profiles";
-import SplashScreens from "./Screens/SplashScreens";
+import React, { useState, } from 'react'; 
+import { View, StyleSheet } from 'react-native';
+//import LittleLemonHeader from './components/LittleLemonHeader';
+//import LittleLemonFooter from './components/LittleLemonFooter';
+import OnboardingScreen from './components/OnboardingScreen';
+import ProfileScreen from './components/ProfileScreen';
+import HomeScreen from './components/HomeScreen';
+//import LoginScreen from './LoginScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import { AuthContext } from "./AuthContext";
-
+const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 
-export default function App({ navigation }) {
-	const [state, dispatch] = useReducer(
-		(prevState, action) => {
-			switch (action.type) {
-				case "onboard":
-					return {
-						...prevState,
-						isLoading: false,
-						isOnboardingCompleted: action.isOnboardingCompleted,
-					};
-			}
-		},
-		{
-			isLoading: true,
-			isOnboardingCompleted: false,
-		}
-	);
+/*
+<>
+<NavigationContainer>
+    <Stack.Navigator useLegacyImplementation initialRouteName="Onboarding">
+      <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+    </Stack.Navigator>
+</NavigationContainer>
+</>
+*/
+/*
+<>
+<Stack.Screen name="HomeScreen" component={HomeScreen} />
+<Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+</>
+*/
 
-	useEffect(() => {
-		(async () => {
-			let profileData = [];
-			try {
-				const getProfile = await AsyncStorage.getItem("profile");
-				if (getProfile !== null) {
-					profileData = getProfile;
-				}
-			} catch (e) {
-				console.error(e);
-			} finally {
-				if (Object.keys(profileData).length != 0) {
-					dispatch({ type: "onboard", isOnboardingCompleted: true });
-				} else {
-					dispatch({ type: "onboard", isOnboardingCompleted: false });
-				}
-			}
-		})();
-	}, []);
-
-	const authContext = useMemo(
-		() => ({
-			onboard: async (data) => {
-				try {
-					const jsonValue = JSON.stringify(data);
-					await AsyncStorage.setItem("profile", jsonValue);
-				} catch (e) {
-					console.error(e);
-				}
-
-				dispatch({ type: "onboard", isOnboardingCompleted: true });
-			},
-			update: async (data) => {
-				try {
-					const jsonValue = JSON.stringify(data);
-					await AsyncStorage.setItem("profile", jsonValue);
-				} catch (e) {
-					console.error(e);
-				}
-
-				Alert.alert("Success", "Successfully saved changes!");
-			},
-			logout: async () => {
-				try {
-					await AsyncStorage.clear();
-				} catch (e) {
-					console.error(e);
-				}
-
-				dispatch({ type: "onboard", isOnboardingCompleted: false });
-			},
-		}),
-		[]
-	);
-
-	if (state.isLoading) {
-		return <SplashScreens />;
-	}
-
-	return (
-		<AuthContext.Provider value={authContext}>
-			<NavigationContainer>
-				<Stack.Navigator>
-					{state.isOnboardingCompleted ? (
-						<>
-							<Stack.Screen name='Home' component={Home} />
-							<Stack.Screen name='Profile' component={Profiles} />
-						</>
-					) : (
-						<Stack.Screen
-							name='Onboarding'
-							component={Onboarding}
-						/>
-					)}
-				</Stack.Navigator>
-			</NavigationContainer>
-		</AuthContext.Provider>
-	);
+function Root() {
+  return (
+    <Drawer.Navigator>
+      <Drawer.Screen name="HomeScreen" component={HomeScreen} />
+      <Drawer.Screen name="ProfileScreen" component={ProfileScreen} />
+    </Drawer.Navigator>
+  );
 }
+export default function App() {
+  const [state, setState] = useState(false);
+  return (
+    //console.log('The state is')
+    //console.log(state)
+    //state ? console.log('1') : console.log('2')
+    //<>
+    <NavigationContainer>
+      <Stack.Navigator>
+          <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+          <Stack.Screen name="Root" component={Root} />
+      </Stack.Navigator>
+    </NavigationContainer>
+    //</>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#333333',
+  },
+  footerContainer: { backgroundColor: '#333333' },
+});
