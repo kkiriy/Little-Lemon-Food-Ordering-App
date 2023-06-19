@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "drawer-navigation---starter-code",
-    "slug": "snack-67ece6ed-80a4-44f8-af79-f7d7ed2f2217",
+    "name": "capstone",
+    "slug": "capstone",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,9 +10,6 @@
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
       "**/*"
@@ -23,11 +20,20 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": ["android.permissions.INTERNET"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photoPermission": "The app access your photos."
+        }
+      ]
+    ]
   }
 }
