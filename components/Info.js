@@ -6,6 +6,7 @@ import {
   Pressable,
   Alert
 } from 'react-native';
+import {validateEmail} from "./utils";
 
 import {useState, useEffect} from 'react'
 
@@ -14,6 +15,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function Info(props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+
+  const isEmailValid = validateEmail(email);
 
   const storeData = async (value) => {
     try {
@@ -52,6 +55,7 @@ export default function Info(props) {
   }, [name, email])
 
   const onNext = () => {
+    if (isEmailValid && name) {
     const dt = {
       name : name,
       email : email,
@@ -59,6 +63,8 @@ export default function Info(props) {
     }
     storeData(dt)
     props.navigation.navigate('Home')
+    }
+    else Alert.alert("Enter a valid e-mail, stay tuned!");
   }
 
   return (
